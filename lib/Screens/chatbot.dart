@@ -11,6 +11,22 @@ class ChatbotScreen extends StatefulWidget {
 class _ChatbotScreenState extends State<ChatbotScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  late final AppState _appState;
+
+  @override
+  void initState() {
+    super.initState();
+    _appState = AppState();
+    _appState.addListener(_scrollToBottom);
+  }
+
+  @override
+  void dispose() {
+    _appState.removeListener(_scrollToBottom);
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -26,30 +42,32 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = AppState();
-
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               backgroundColor: Color(0xFF0E4F87),
               child: Icon(Icons.psychology, color: Colors.white),
             ),
-            SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "AI Engineer Assistant",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
-                ),
-                Text(
-                  "Online | Support Engine v1.2",
-                  style: TextStyle(fontSize: 11, color: Colors.green, fontWeight: FontWeight.w600),
-                ),
-              ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    "AI Engineer Assistant",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    "Online | Support Engine v1.2",
+                    style: TextStyle(fontSize: 11, color: Colors.green, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -61,9 +79,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         ),
       ),
       body: ListenableBuilder(
-        listenable: appState,
+        listenable: _appState,
         builder: (context, _) {
-          _scrollToBottom();
           return Column(
             children: [
               // Chat Messages
@@ -71,9 +88,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.all(20),
-                  itemCount: appState.chatMessages.length,
+                  itemCount: _appState.chatMessages.length,
                   itemBuilder: (context, index) {
-                    final msg = appState.chatMessages[index];
+                    final msg = _appState.chatMessages[index];
                     return _chatBubble(msg);
                   },
                 ),
@@ -128,7 +145,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                         ),
                         onSubmitted: (val) {
                           if (val.trim().isNotEmpty) {
-                            appState.sendChatMessage(val);
+                            _appState.sendChatMessage(val);
                             _controller.clear();
                           }
                         },
@@ -142,7 +159,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                         icon: const Icon(Icons.send, color: Colors.white, size: 18),
                         onPressed: () {
                           if (_controller.text.trim().isNotEmpty) {
-                            appState.sendChatMessage(_controller.text);
+                            _appState.sendChatMessage(_controller.text);
                             _controller.clear();
                           }
                         },
@@ -165,20 +182,23 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       side: BorderSide.none,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       onPressed: () {
-        AppState().sendChatMessage(text);
+        _appState.sendChatMessage(text);
       },
     );
   }
 
   Widget _chatBubble(ChatMessage message) {
     final isUser = message.isUser;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.all(16),
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.7,
+          maxWidth: screenWidth * (isMobile ? 0.85 : 0.65),
         ),
         decoration: BoxDecoration(
           color: isUser ? const Color(0xFF0E4F87) : Colors.white,
@@ -190,7 +210,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withValues(alpha: 0.02),
               blurRadius: 4,
               offset: const Offset(0, 2),
             )
@@ -213,7 +233,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
               child: Text(
                 "${message.time.hour}:${message.time.minute.toString().padLeft(2, '0')}",
                 style: TextStyle(
-                  color: isUser ? Colors.white.withOpacity(0.6) : Colors.grey.shade400,
+                  color: isUser ? Colors.white.withValues(alpha: 0.6) : Colors.grey.shade400,
                   fontSize: 10,
                 ),
               ),

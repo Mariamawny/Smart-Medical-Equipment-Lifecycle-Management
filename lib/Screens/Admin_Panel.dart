@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ed_app/state/app_state.dart';
-import 'device_profile1.dart';
 
 class AdminPanel extends StatefulWidget {
   const AdminPanel({super.key});
@@ -102,7 +101,7 @@ class _AdminPanelState extends State<AdminPanel> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withValues(alpha: 0.02),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   )
@@ -209,7 +208,7 @@ class _AdminPanelState extends State<AdminPanel> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withValues(alpha: 0.02),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   )
@@ -287,7 +286,7 @@ class _AdminPanelState extends State<AdminPanel> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 8,
             offset: const Offset(0, 3),
           )
@@ -322,7 +321,7 @@ class _AdminPanelState extends State<AdminPanel> {
             height: 44,
             width: 44,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(

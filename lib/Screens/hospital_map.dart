@@ -69,7 +69,7 @@ class _HospitalMapState extends State<HospitalMap> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -126,7 +126,7 @@ class _HospitalMapState extends State<HospitalMap> {
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: Colors.blue.withOpacity(0.2),
+                                color: Colors.blue.withValues(alpha: 0.2),
                                 blurRadius: 10,
                                 spreadRadius: 2,
                               )
@@ -221,7 +221,7 @@ class _HospitalMapState extends State<HospitalMap> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -294,7 +294,7 @@ class _HospitalMapState extends State<HospitalMap> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                                   decoration: BoxDecoration(
-                                    color: statusColor.withOpacity(0.1),
+                                    color: statusColor.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
@@ -408,7 +408,7 @@ class _HospitalMapState extends State<HospitalMap> {
           width: 12,
           height: 12,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
             border: Border.all(color: color, width: 2),
             borderRadius: BorderRadius.circular(4),
           ),

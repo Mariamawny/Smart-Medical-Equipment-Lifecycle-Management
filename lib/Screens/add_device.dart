@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ed_app/state/app_state.dart';
 
+
 class AddDevice extends StatefulWidget {
   const AddDevice({super.key});
 
@@ -27,6 +28,28 @@ class _AddDeviceState extends State<AddDevice> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 600;
+
+    Widget buildResponsiveRow(Widget w1, Widget w2) {
+      if (isMobile) {
+        return Column(
+          children: [
+            w1,
+            const SizedBox(height: 16),
+            w2,
+          ],
+        );
+      }
+      return Row(
+        children: [
+          Expanded(child: w1),
+          const SizedBox(width: 16),
+          Expanded(child: w2),
+        ],
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
       appBar: AppBar(
@@ -43,16 +66,18 @@ class _AddDeviceState extends State<AddDevice> {
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
           child: Container(
-            maxWidth: 600,
-            padding: const EdgeInsets.all(32),
+            constraints: const BoxConstraints(
+              maxWidth: 600,
+            ),
+            padding: EdgeInsets.all(isMobile ? 20 : 32),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 )
@@ -69,65 +94,51 @@ class _AddDeviceState extends State<AddDevice> {
                   ),
                   const SizedBox(height: 16),
                   
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _idController,
-                          decoration: const InputDecoration(
-                            labelText: "Device ID *",
-                            hintText: "e.g., VNT-2024-004",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          ),
-                          validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
-                        ),
+                  buildResponsiveRow(
+                    TextFormField(
+                      controller: _idController,
+                      decoration: const InputDecoration(
+                        labelText: "Device ID *",
+                        hintText: "e.g., VNT-2024-004",
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                            labelText: "Device Name *",
-                            hintText: "e.g., Philips Trilogy 200",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          ),
-                          validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
-                        ),
+                      validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
+                    ),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: "Device Name *",
+                        hintText: "e.g., Philips Trilogy 200",
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
-                    ],
+                      validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
+                    ),
                   ),
                   const SizedBox(height: 16),
 
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _brandController,
-                          decoration: const InputDecoration(
-                            labelText: "Brand *",
-                            hintText: "e.g., Philips",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          ),
-                          validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
-                        ),
+                  buildResponsiveRow(
+                    TextFormField(
+                      controller: _brandController,
+                      decoration: const InputDecoration(
+                        labelText: "Brand *",
+                        hintText: "e.g., Philips",
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _modelController,
-                          decoration: const InputDecoration(
-                            labelText: "Model *",
-                            hintText: "e.g., Trilogy 200",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          ),
-                          validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
-                        ),
+                      validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
+                    ),
+                    TextFormField(
+                      controller: _modelController,
+                      decoration: const InputDecoration(
+                        labelText: "Model *",
+                        hintText: "e.g., Trilogy 200",
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
-                    ],
+                      validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   const Divider(),
@@ -138,73 +149,59 @@ class _AddDeviceState extends State<AddDevice> {
                   ),
                   const SizedBox(height: 16),
 
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<String>(
-                          value: selectedType,
-                          decoration: const InputDecoration(
-                            labelText: "Device Type",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          ),
-                          items: deviceTypes.map((type) {
-                            return DropdownMenuItem(value: type, child: Text(type));
-                          }).toList(),
-                          onChanged: (val) {
-                            if (val != null) setState(() => selectedType = val);
-                          },
-                        ),
+                  buildResponsiveRow(
+                    DropdownButtonFormField<String>(
+                      value: selectedType,
+                      decoration: const InputDecoration(
+                        labelText: "Device Type",
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: DropdownButtonFormField<String>(
-                          value: selectedRoom,
-                          decoration: const InputDecoration(
-                            labelText: "Room Location",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          ),
-                          items: roomLocations.map((room) {
-                            return DropdownMenuItem(value: room, child: Text(room));
-                          }).toList(),
-                          onChanged: (val) {
-                            if (val != null) setState(() => selectedRoom = val);
-                          },
-                        ),
+                      items: deviceTypes.map((type) {
+                        return DropdownMenuItem(value: type, child: Text(type));
+                      }).toList(),
+                      onChanged: (val) {
+                        if (val != null) setState(() => selectedType = val);
+                      },
+                    ),
+                    DropdownButtonFormField<String>(
+                      value: selectedRoom,
+                      decoration: const InputDecoration(
+                        labelText: "Room Location",
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
-                    ],
+                      items: roomLocations.map((room) {
+                        return DropdownMenuItem(value: room, child: Text(room));
+                      }).toList(),
+                      onChanged: (val) {
+                        if (val != null) setState(() => selectedRoom = val);
+                      },
+                    ),
                   ),
                   const SizedBox(height: 16),
 
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _hoursController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: "Usage Hours",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          ),
-                          validator: (val) => val == null || int.tryParse(val) == null ? "Must be integer" : null,
-                        ),
+                  buildResponsiveRow(
+                    TextFormField(
+                      controller: _hoursController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: "Usage Hours",
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _ageController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: "Age (Months)",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          ),
-                          validator: (val) => val == null || int.tryParse(val) == null ? "Must be integer" : null,
-                        ),
+                      validator: (val) => val == null || int.tryParse(val) == null ? "Must be integer" : null,
+                    ),
+                    TextFormField(
+                      controller: _ageController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: "Age (Months)",
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
-                    ],
+                      validator: (val) => val == null || int.tryParse(val) == null ? "Must be integer" : null,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   
@@ -231,7 +228,7 @@ class _AddDeviceState extends State<AddDevice> {
                       OutlinedButton(
                         onPressed: () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: 16),
                         ),
                         child: const Text("Cancel"),
                       ),
@@ -272,7 +269,7 @@ class _AddDeviceState extends State<AddDevice> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF0E4F87),
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: 16),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                         ),
                         child: const Text("Register Device", style: TextStyle(fontWeight: FontWeight.bold)),

@@ -85,7 +85,7 @@ class _SparePartsScreenState extends State<SparePartsScreen> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.01),
+                        color: Colors.black.withValues(alpha: 0.01),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       )
@@ -99,7 +99,7 @@ class _SparePartsScreenState extends State<SparePartsScreen> {
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
                           columnSpacing: 48,
-                          headingRowColor: MaterialStateProperty.all(const Color(0xFFF1F5F9)),
+                          headingRowColor: WidgetStateProperty.all(const Color(0xFFF1F5F9)),
                           columns: const [
                             DataColumn(label: Text("Part Name", style: TextStyle(fontWeight: FontWeight.bold))),
                             DataColumn(label: Text("Stock Level", style: TextStyle(fontWeight: FontWeight.bold))),
@@ -138,7 +138,7 @@ class _SparePartsScreenState extends State<SparePartsScreen> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: statusColor.withOpacity(0.1),
+                                      color: statusColor.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Text(
@@ -196,7 +196,7 @@ class _SparePartsScreenState extends State<SparePartsScreen> {
         border: Border(left: BorderSide(color: color, width: 4)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 8,
             offset: const Offset(0, 3),
           )

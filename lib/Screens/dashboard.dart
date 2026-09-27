@@ -8,6 +8,7 @@ import 'hospital_map.dart';
 import 'chatbot.dart';
 import 'spare_parts.dart';
 import 'incident_report.dart';
+import 'qr_scanner.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -24,15 +25,26 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     final appState = AppState();
     final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final isTablet = screenWidth >= 600 && screenWidth < 1100;
     final isSmallScreen = screenWidth < 1100;
 
-    final largeCardWidth = isSmallScreen 
-        ? (screenWidth - 72 - 20) / 2
-        : (screenWidth * 0.55 - 40) / 3;
+    final double paddingValue = isMobile ? 16.0 : 28.0;
 
-    final smallCardWidth = isSmallScreen
-        ? (screenWidth - 72 - 20) / 2
-        : (screenWidth * 0.55 - 60) / 4;
+    // Calculate available content width
+    final double availableWidth = isSmallScreen 
+        ? (screenWidth - (paddingValue * 2))
+        : ((screenWidth * 0.58) - 40);
+
+    // Dynamic width for large status cards
+    final double largeCardWidth = isMobile
+        ? (availableWidth - 12) / 2
+        : (isTablet ? (availableWidth - 40) / 3 : (availableWidth - 40) / 3);
+
+    // Dynamic width for action buttons
+    final double smallCardWidth = isMobile
+        ? (availableWidth - 12) / 2
+        : (isTablet ? (availableWidth - 36) / 4 : (availableWidth - 36) / 4);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
@@ -53,16 +65,34 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             const SizedBox(width: 12),
-            const Text(
-              "ED Equipment Control Center",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+            const Expanded(
+              child: Text(
+                "ED Equipment Control Center",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: IconButton(
+              icon: const Icon(Icons.qr_code_scanner, color: Color(0xFF0E4F87), size: 26),
+              tooltip: "Scan Device QR Code",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const QRScannerScreen()),
+                );
+              },
+            ),
+          )
+        ],
       ),
       body: ListenableBuilder(
         listenable: appState,
@@ -77,8 +107,8 @@ class _DashboardState extends State<Dashboard> {
             children: [
               /// ================= Large Cards =================
               Wrap(
-                spacing: 20,
-                runSpacing: 20,
+                spacing: isMobile ? 12 : 20,
+                runSpacing: isMobile ? 12 : 20,
                 children: [
                   animatedLargeCard(
                     index: 0,
@@ -87,6 +117,7 @@ class _DashboardState extends State<Dashboard> {
                     emoji: "✔️",
                     number: "$workingCount",
                     title: "Working Devices",
+                    isMobile: isMobile,
                   ),
                   animatedLargeCard(
                     index: 1,
@@ -95,6 +126,7 @@ class _DashboardState extends State<Dashboard> {
                     emoji: "🔧",
                     number: "$maintCount",
                     title: "Under Maintenance",
+                    isMobile: isMobile,
                   ),
                   animatedLargeCard(
                     index: 2,
@@ -104,11 +136,12 @@ class _DashboardState extends State<Dashboard> {
                     number: "$criticalCount",
                     title: "Critical Issues",
                     textColor: criticalCount > 0 ? Colors.red.shade700 : Colors.black,
+                    isMobile: isMobile,
                   ),
                 ],
               ),
 
-              const SizedBox(height: 36),
+              const SizedBox(height: 28),
 
               /// ================= Quick Actions =================
               const Text(
@@ -182,6 +215,14 @@ class _DashboardState extends State<Dashboard> {
                     page: const IncidentReportScreen(),
                     customBgColor: const Color.fromARGB(255, 139, 10, 10),
                   ),
+                  _actionBtn(
+                    index: 8,
+                    width: smallCardWidth,
+                    emoji: "🔍",
+                    title: "QR Scanner",
+                    page: const QRScannerScreen(),
+                    customBgColor: const Color(0xFF0E4F87),
+                  ),
                 ],
               ),
             ],
@@ -195,7 +236,7 @@ class _DashboardState extends State<Dashboard> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.02),
+                  color: Colors.black.withValues(alpha: 0.02),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -309,6 +350,7 @@ class _DashboardState extends State<Dashboard> {
     required String number,
     required String title,
     Color? textColor,
+    bool isMobile = false,
   }) {
     final isHovered = hoveredLargeCardIndex == index;
 
@@ -321,14 +363,14 @@ class _DashboardState extends State<Dashboard> {
         curve: Curves.easeOutCubic,
         transform: Matrix4.translationValues(0, isHovered ? -8 : 0, 0),
         width: width,
-        height: 200,
-        padding: const EdgeInsets.all(20),
+        height: isMobile ? 160 : 185,
+        padding: EdgeInsets.all(isMobile ? 14 : 20),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isHovered ? 0.12 : 0.05),
+              color: Colors.black.withValues(alpha: isHovered ? 0.12 : 0.05),
               blurRadius: isHovered ? 20 : 10,
               offset: Offset(0, isHovered ? 12 : 6),
             ),
@@ -336,28 +378,46 @@ class _DashboardState extends State<Dashboard> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              height: 48,
-              width: 48,
+              height: isMobile ? 38 : 44,
+              width: isMobile ? 38 : 44,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.06),
-                borderRadius: BorderRadius.circular(12),
+                color: Colors.black.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(10),
               ),
               alignment: Alignment.center,
-              child: Text(emoji, style: const TextStyle(fontSize: 24)),
+              child: Text(emoji, style: TextStyle(fontSize: isMobile ? 18 : 22)),
             ),
-            const Spacer(),
-            Text(
-              number,
-              style: TextStyle(
-                fontSize: 38,
-                fontWeight: FontWeight.bold,
-                color: textColor ?? Colors.black87,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    number,
+                    style: TextStyle(
+                      fontSize: isMobile ? 28 : 34,
+                      fontWeight: FontWeight.bold,
+                      color: textColor ?? Colors.black87,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontSize: isMobile ? 11 : 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            const SizedBox(height: 4),
-            Text(title, style: TextStyle(color: Colors.grey.shade700, fontSize: 13)),
           ],
         ),
       ),
@@ -406,7 +466,7 @@ class _DashboardState extends State<Dashboard> {
                 height: 36,
                 width: 36,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 alignment: Alignment.center,

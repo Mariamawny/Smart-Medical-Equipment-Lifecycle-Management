@@ -53,14 +53,16 @@ class _IncidentReportScreenState extends State<IncidentReportScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Container(
-            maxWidth: 550,
+            constraints: const BoxConstraints(
+              maxWidth: 550,
+            ),
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 )
@@ -92,6 +94,7 @@ class _IncidentReportScreenState extends State<IncidentReportScreen> {
                   const Text("1. Select Room / Location", style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
+                    isExpanded: true,
                     decoration: InputDecoration(
                       hintText: "Choose a Room",
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -99,7 +102,13 @@ class _IncidentReportScreenState extends State<IncidentReportScreen> {
                     ),
                     value: selectedRoom,
                     items: rooms.map((room) {
-                      return DropdownMenuItem(value: room, child: Text(room));
+                      return DropdownMenuItem(
+                        value: room,
+                        child: Text(
+                          room,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
                     }).toList(),
                     onChanged: (val) {
                       setState(() {
@@ -115,6 +124,7 @@ class _IncidentReportScreenState extends State<IncidentReportScreen> {
                   const Text("2. Select Malfunctioning Device", style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
+                    isExpanded: true,
                     decoration: InputDecoration(
                       hintText: selectedRoom == null ? "Choose room first" : "Choose a Device",
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -124,7 +134,10 @@ class _IncidentReportScreenState extends State<IncidentReportScreen> {
                     items: filteredDevices.map((device) {
                       return DropdownMenuItem(
                         value: device.id,
-                        child: Text("${device.name} (${device.id})"),
+                        child: Text(
+                          "${device.name} (${device.id})",
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       );
                     }).toList(),
                     onChanged: selectedRoom == null
@@ -142,6 +155,7 @@ class _IncidentReportScreenState extends State<IncidentReportScreen> {
                   const Text("3. Describe the Issue", style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
+                    isExpanded: true,
                     decoration: InputDecoration(
                       hintText: "Select issue type",
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -149,7 +163,13 @@ class _IncidentReportScreenState extends State<IncidentReportScreen> {
                     ),
                     value: selectedProblem,
                     items: problemsList.map((prob) {
-                      return DropdownMenuItem(value: prob, child: Text(prob));
+                      return DropdownMenuItem(
+                        value: prob,
+                        child: Text(
+                          prob,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
                     }).toList(),
                     onChanged: (val) {
                       setState(() {

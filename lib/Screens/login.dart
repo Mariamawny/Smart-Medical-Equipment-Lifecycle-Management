@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, deprecated_member_use
+// ignore_for_file: unused_import
 
 import 'package:ed_app/Screens/dashboard.dart';
 import 'package:flutter/material.dart';
@@ -15,103 +15,101 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
 
-    // مقاسات الشاشة
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // حجم اللوجو أصغر
-    final logoSize = screenWidth * 0.045;
+    final isMobile = screenWidth < 600;
 
-    // ابعاد البوكس (طول أكبر)
-    final loginBoxWidth = screenWidth > 600
-        ? screenWidth * 0.40
-        : screenWidth * 0.85;
-    final loginBoxHeight = screenHeight * 0.72;
+    final logoSize = isMobile ? 36.0 : 42.0;
+
+    final loginBoxWidth = screenWidth > 900
+        ? 450.0
+        : (screenWidth > 600 ? screenWidth * 0.55 : screenWidth * 0.90);
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(screenHeight * 0.10),
+        preferredSize: Size.fromHeight(isMobile ? 60.0 : screenHeight * 0.09),
         child: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           iconTheme: const IconThemeData(color: Colors.black),
-          title: const SizedBox(),
-
-          flexibleSpace: Padding(
-            padding: EdgeInsets.only(
-              top: screenHeight * 0.03,
-              left: 16,
-              right: 16,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // لوجو + عنوان
-                Row(
-                  children: [
-                    Container(
-                      width: logoSize,
-                      height: logoSize,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0E4F87),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF0E4F87).withOpacity(0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: logoSize,
+                          height: logoSize,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF0E4F87),
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF0E4F87).withValues(alpha: 0.3),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Text(
-                          '⚕️',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
+                          child: const Center(
+                            child: Text(
+                              '⚕️',
+                              style: TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    SizedBox(width: screenWidth * 0.015),
-                    const Text(
-                      'ED Ventilator Maintenance System',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-
-                // شمس + تاريخ
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.4),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            'ED Maintenance System',
+                            style: TextStyle(
+                              fontSize: isMobile ? 15 : 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.wb_sunny,
-                        color: Colors.orange,
-                        size: 22,
-                      ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "${now.day}-${now.month}-${now.year}",
-                      style: const TextStyle(fontSize: 18, color: Colors.black),
+                  ),
+
+                  if (!isMobile)
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withValues(alpha: 0.4),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.wb_sunny,
+                            color: Colors.orange,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "${now.day}-${now.month}-${now.year}",
+                          style: const TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -129,214 +127,193 @@ class _LoginState extends State<Login> {
         ),
 
         child: Center(
-          child: Container(
-            width: loginBoxWidth,
-            height: loginBoxHeight,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-
-            child: Column(
-              children: [
-                const SizedBox(height: 32),
-                const Text(
-                  'Staff Login',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0E4F87),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Container(
+              width: loginBoxWidth,
+              padding: EdgeInsets.all(isMobile ? 20 : 32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
-                ),
+                ],
+              ),
 
-                const SizedBox(height: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Staff Login',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0E4F87),
+                    ),
+                  ),
 
-                const Text(
-                  'Enter your credentials to access the system',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
+                  const SizedBox(height: 8),
 
-                const SizedBox(height: 20),
+                  const Text(
+                    'Enter your credentials to access the system',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
 
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 40),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Staff ID',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                        ),
+                  const SizedBox(height: 24),
 
-                        const SizedBox(height: 8),
+                  const Text(
+                    'Staff ID',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                  ),
 
-                        // Staff ID TextField
-                        Container(
-                          width: loginBoxWidth - 80,
-                          height: 45,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.blue.withOpacity(0.3),
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: const Color.fromARGB(255, 22, 62, 95),
-                                  width: 1.2,
-                                ),
-                              ),
-                              hintText: 'Enter Staff ID',
-                              hintStyle: TextStyle(color: Colors.grey.shade500),
-                            ),
-                          ),
-                        ),
+                  const SizedBox(height: 8),
 
-                        const SizedBox(height: 30),
-
-                        const Text(
-                          'Password',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                        ),
-
-
-
-
-                        const SizedBox(height: 8),
-
-
-
-
-
-                        // Password TextField
-                        Container(
-                          width: loginBoxWidth - 80,
-                          height: 45,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.blue.withOpacity(0.3),
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade400,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: const Color.fromARGB(255, 22, 62, 95),
-                                  width: 1.2,
-                                ),
-                              ),
-                              hintText: 'Enter Password',
-                              hintStyle: TextStyle(color: Colors.grey.shade500),
-                            ),
-                          ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.withValues(alpha: 0.15),
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-             
-
-                SizedBox(
-                  width: loginBoxWidth - 80,
-                  height: 45,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/Dashboard');
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return const Color(0xFF063B5C);
-                          }
-                          return const Color(0xFF0E4F87);
-                        },
-                      ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 12,
+                        ),
+                        border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF0E4F87),
+                            width: 1.5,
+                          ),
+                        ),
+                        hintText: 'Enter Staff ID',
+                        hintStyle: TextStyle(color: Colors.grey.shade500),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  const Text(
+                    'Password',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.withValues(alpha: 0.15),
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF0E4F87),
+                            width: 1.5,
+                          ),
+                        ),
+                        hintText: 'Enter Password',
+                        hintStyle: TextStyle(color: Colors.grey.shade500),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  SizedBox(
+                    height: 48,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/Dashboard');
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (states) {
+                            if (states.contains(WidgetState.pressed)) {
+                              return const Color(0xFF063B5C);
+                            }
+                            return const Color(0xFF0E4F87);
+                          },
+                        ),
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

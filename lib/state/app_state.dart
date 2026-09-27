@@ -334,7 +334,7 @@ class AppState extends ChangeNotifier {
   // Add Device
   void addDevice(MedicalDevice device) {
     _devices.add(device);
-    _notifications.insert(0, "New device added: ${device.brand} ${device.model} (${device.id}) in ${device.room}.");
+    _addNotification("New device added: ${device.brand} ${device.model} (${device.id}) in ${device.room}.");
     notifyListeners();
   }
 
@@ -343,7 +343,7 @@ class AppState extends ChangeNotifier {
     final deviceIndex = _devices.indexWhere((d) => d.id == id);
     if (deviceIndex != -1) {
       _devices[deviceIndex].status = status;
-      _notifications.insert(0, "Device ${id} status updated to ${status}.");
+      _addNotification("Device $id status updated to $status.");
       notifyListeners();
     }
   }
@@ -367,7 +367,7 @@ class AppState extends ChangeNotifier {
         // Deduct spare part stock
         useSparePart(partUsed, 1);
       }
-      _notifications.insert(0, "Maintenance logged for device ${id}. Status reset to Working.");
+      _addNotification("Maintenance logged for device $id. Status reset to Working.");
       notifyListeners();
     }
   }
@@ -379,9 +379,9 @@ class AppState extends ChangeNotifier {
       final part = _spareParts[partIndex];
       part.updateStock(-qty);
       if (part.status == 'Out of Stock') {
-        _notifications.insert(0, "CRITICAL STOCK ALERT: ${part.name} is OUT OF STOCK!");
+        _addNotification("CRITICAL STOCK ALERT: ${part.name} is OUT OF STOCK!");
       } else if (part.status == 'Low Stock') {
-        _notifications.insert(0, "STOCK ALERT: ${part.name} is low in stock (${part.currentStock} remaining).");
+        _addNotification("STOCK ALERT: ${part.name} is low in stock (${part.currentStock} remaining).");
       }
       notifyListeners();
     }
@@ -393,7 +393,7 @@ class AppState extends ChangeNotifier {
     if (partIndex != -1) {
       final part = _spareParts[partIndex];
       part.updateStock(10); // order 10 units
-      _notifications.insert(0, "Reorder request approved: Added 10 units to ${part.name} inventory.");
+      _addNotification("Reorder request approved: Added 10 units to ${part.name} inventory.");
       notifyListeners();
     }
   }
@@ -420,7 +420,7 @@ class AppState extends ChangeNotifier {
     device.status = 'Critical';
     device.previousFailures += 1;
     
-    _notifications.insert(0, "ALERT: New Incident reported on ${device.name} in Room ${device.room}: $problemType");
+    _addNotification("ALERT: New Incident reported on ${device.name} in Room ${device.room}: $problemType");
     notifyListeners();
   }
 
@@ -515,7 +515,10 @@ class AppState extends ChangeNotifier {
     for (var device in _devices) {
       for (var partInfo in device.sparePartsUsed) {
         final partName = partInfo['part'];
-        final part = _spareParts.firstWhere((p) => p.name == partName, orElse: () => SparePart(name: '', currentStock: 0, minStock: 0, unitCost: 0.0, supplier: ''));
+        final part = _spareParts.firstWhere(
+          (p) => p.name.toLowerCase() == partName?.toLowerCase(),
+          orElse: () => SparePart(name: '', currentStock: 0, minStock: 0, unitCost: 0.0, supplier: ''),
+        );
         cost += part.unitCost;
       }
     }
@@ -526,5 +529,12 @@ class AppState extends ChangeNotifier {
   double get meanTimeToRepairHours {
     // Simulation based on resolved reports
     return 1.8;
+  }
+
+  void _addNotification(String message) {
+    _notifications.insert(0, message);
+    if (_notifications.length > 50) {
+      _notifications.removeRange(50, _notifications.length);
+    }
   }
 }

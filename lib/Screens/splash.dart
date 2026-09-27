@@ -44,10 +44,12 @@ class _SplashScreenState extends State<SplashScreen>
 
     // ⬅️ هنا نحط الانتقال للّوجين
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const Login()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const Login()),
+        );
+      }
     });
 
     // Fade animation
@@ -113,116 +115,119 @@ class _SplashScreenState extends State<SplashScreen>
             ),
 
             Center(
-              child: FadeTransition(
-                opacity: CurvedAnimation(
-                  parent: _fadeController,
-                  curve: Curves.easeOut,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          AnimatedBuilder(
-                            animation: _pulseController,
-                            builder: (context, child) {
-                              final scale = 1.0 +
-                                  (math.sin(
-                                        _pulseController.value * 2 * math.pi,
-                                      ) *
-                                      0.05);
-                              return Transform.scale(
-                                scale: scale,
-                                child: Container(
-                                  width: 140,
-                                  height: 140,
-                                  decoration: BoxDecoration(
-                                    color: babyBlue.withOpacity(0.3),
-                                    shape: BoxShape.circle,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                child: FadeTransition(
+                  opacity: CurvedAnimation(
+                    parent: _fadeController,
+                    curve: Curves.easeOut,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 120,
+                        height: 120,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            AnimatedBuilder(
+                              animation: _pulseController,
+                              builder: (context, child) {
+                                final scale = 1.0 +
+                                    (math.sin(
+                                          _pulseController.value * 2 * math.pi,
+                                        ) *
+                                        0.05);
+                                return Transform.scale(
+                                  scale: scale,
+                                  child: Container(
+                                    width: 140,
+                                    height: 140,
+                                    decoration: BoxDecoration(
+                                      color: babyBlue.withValues(alpha: 0.3),
+                                      shape: BoxShape.circle,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: primaryBlue,
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFF0E4F87).withOpacity(0.3),
-                                  blurRadius: 32,
-                                  offset: const Offset(0, 8),
-                                ),
-                              ],
+                                );
+                              },
                             ),
-                            child: const Center(
-                              child: Text(
-                                '⚕️',
-                                style: TextStyle(
-                                  fontSize: 64,
-                                  color: Colors.white,
+
+                            Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                color: primaryBlue,
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF0E4F87).withValues(alpha: 0.3),
+                                    blurRadius: 32,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  '⚕️',
+                                  style: TextStyle(
+                                    fontSize: 64,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          'ED Ventilator Maintenance System',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width < 400 ? 24 : 32,
+                            fontWeight: FontWeight.w700,
+                            color: softNavy,
+                            fontFamily: 'Roboto Mono',
+                            height: 1.2,
                           ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          'Emergency Department Medical Equipment Management',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width < 400 ? 14 : 16,
+                            color: mediumGray,
+                            fontFamily: 'Inter',
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 36),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildDot(0.0),
+                          const SizedBox(width: 12),
+                          _buildDot(0.2),
+                          const SizedBox(width: 12),
+                          _buildDot(0.4),
                         ],
                       ),
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'ED Ventilator Maintenance System',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700,
-                          color: softNavy,
-                          fontFamily: 'Roboto Mono',
-                          height: 1.2,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'Emergency Department Medical Equipment Management',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: mediumGray,
-                          fontFamily: 'Inter',
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 48),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildDot(0.0),
-                        const SizedBox(width: 12),
-                        _buildDot(0.2),
-                        const SizedBox(width: 12),
-                        _buildDot(0.4),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -262,7 +267,7 @@ class _SplashScreenState extends State<SplashScreen>
             width: 12,
             height: 12,
             decoration: BoxDecoration(
-              color: primaryBlue.withOpacity(opacity),
+              color: primaryBlue.withValues(alpha: opacity),
               shape: BoxShape.circle,
             ),
           ),
